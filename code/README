@@ -1,0 +1,44 @@
+EC2 Servers
+===========
+ec2-54-85-79-138.compute-1.amazonaws.com   Origin server (running Web server on port 8080)
+ec2-54-84-248-26.compute-1.amazonaws.com    N. Virginia
+ec2-54-186-185-27.us-west-2.compute.amazonaws.com   Oregon
+ec2-54-215-216-108.us-west-1.compute.amazonaws.com  N. California
+ec2-54-72-143-213.eu-west-1.compute.amazonaws.com   Ireland
+ec2-54-255-143-38.ap-southeast-1.compute.amazonaws.com  Singapore
+ec2-54-199-204-174.ap-northeast-1.compute.amazonaws.com Tokyo
+ec2-54-206-102-208.ap-southeast-2.compute.amazonaws.com Sydney
+ec2-54-207-73-134.sa-east-1.compute.amazonaws.com   Sao Paulo
+
+Milestone
+=======================
+High-Level Approach
+1. DNS Server
+Look up the format for a DNS A record query, then implement code that parses it and get the domain name that clients request. Follow the format for a DNS answer and build a DNS packet, then returns a well-formed response with a specific IP address.
+
+2. HTTP Server
+We customize our HTTP server based on python built-in HTTPServer class.
+
+Challenges
+The most challenging part in this milestone is parse a DNS request and send a DNS answer with a correct IP address. We solve this problem by reading this document: http://www.ccs.neu.edu/home/amislove/teaching/cs4700/fall09/handouts/project1-primer.pdf and  understanding DNS format.
+
+Final Project 
+==============================
+High-Level Approach
+1. Mapping
+In this project, we use two methods to find the best replica server.
+
+Active measurement
+We use the following scamper command to meausre latency:
+scamper -c 'ping -c 1' -i [client IP]
+
+IP Geolocation
+We use IP location service of IPInfoDB.com. After registering an account, we get an api key. We can do a query for the location of a given IP address by fetch such url:
+http://api.ipinfodb.com/v3/ip-city/?key=<api_key>&ip=<ip address>
+The query result contains the latitude and longitude of the location of the given IP address. It is easy to calculate the distance between two location. So we can find the closest replica server to the client.
+
+2. Cache Management
+Least Recently Used (LRU) discards the least recently used items first. This algorithm requires keeping track of what was used when, which is expensive if one wants to make sure the algorithm always discards the least recently used item. In this project, we use a stack to implement LRU. Every time a page is accessed, push this page into the stack. When disk is full, delete the page in the bottom of the stack.
+
+Challenges
+The most challenging part in this project is how find a best replica servers. As mentioned above, we use Active measurement first and IP Geolocation when active measurement does not work.
